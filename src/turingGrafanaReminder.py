@@ -1,8 +1,13 @@
 import os
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+from time import sleep
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -12,6 +17,26 @@ audit_channel_id = os.environ['AUDIT_CHANNEL_ID']
 communication_channel_id = os.environ['COMMUNICATION_CHANNEL_ID']
 group_id = os.environ['GROUP_ID'] # @Jamie
 
+required_env_vars = ['SLACK_TOKEN', 'REMINDER_CHANNEL_ID', 'AUDIT_CHANNEL_ID', 'COMMUNICATION_CHANNEL_ID', 'GROUP_ID']
+for var in required_env_vars:
+    if var not in os.environ:
+        raise EnvironmentError(f"Missing required environment variable: {var}")
+
+def retry_on_rate_limit(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except SlackApiError as e:
+            if e.response['error'] == 'rate_limited':
+                retry_after = int(e.response.headers.get('Retry-After', 1))
+                logger.warning(f"Rate limited. Retrying after {retry_after} seconds...")
+                sleep(retry_after)
+                return func(*args, **kwargs)
+            else:
+                raise e
+    return wrapper
+
+@retry_on_rate_limit
 def check_channel_for_grafana(channel_id):
     try:
         # Fetch the message history from the channel
@@ -28,7 +53,7 @@ def check_channel_for_grafana(channel_id):
                 return True  # Found a message with "Grafana"
         return False  # No messages with "Grafana" found today
     except SlackApiError as e:
-        print(f"Error fetching messages from channel {channel_id}: {e.response['error']}")
+        logger.error(f"Error fetching messages from channel {channel_id}: {e.response['error']}")
         return False
 
 def send_reminder(missing_channels):
@@ -38,7 +63,7 @@ def send_reminder(missing_channels):
         elif len(missing_channels) == 1:
             message = f"<@{group_id}> Grafana Monitoring missing for: {missing_channels[0]}."
         else:
-            print("All channels have messages containing 'Grafana' for today. No reminder needed.")
+            logger.info("All channels have messages containing 'Grafana' for today. No reminder needed.")
             return  # No reminder needed
         
         client.chat_postMessage(channel=reminder_channel_id, text=message)
