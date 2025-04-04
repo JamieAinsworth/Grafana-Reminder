@@ -1,5 +1,7 @@
 # Grafana Reminder Bot
 
+[![Run Slack Bot](https://github.com/JamieAinsworth/Grafana-Reminder/actions/workflows/run-reminder.yml/badge.svg)](https://github.com/JamieAinsworth/Grafana-Reminder/actions/workflows/run-reminder.yml)
+
 This project automates sending reminder messages in Slack by checking for recent posts in specified channels for the word "Grafana." If no recent posts contain that word, a reminder message is sent to a designated channel.
 
 ## Project Structure
