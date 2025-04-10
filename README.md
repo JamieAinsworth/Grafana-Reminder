@@ -111,7 +111,3 @@ To securely store your Slack API token and other sensitive data:
 - **Rota Integration**: The bot now uses a `rota.json` file to determine the main and backup responsible for the current week.
 - **Dynamic Slack ID Retrieval**: Slack user IDs are stored in the `.env` file and retrieved dynamically using the `get_slack_id` function.
 - **Error Handling**: Improved error handling for missing rota entries and Slack API errors.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
