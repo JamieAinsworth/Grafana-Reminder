@@ -57,10 +57,10 @@ def send_reminder(missing_channels, main, backup):
         backup_id = get_slack_id(backup)
 
         if len(missing_channels) == 2:
-            message = f"<@{main_id}> (Main) and <@{backup_id}> (Backup), Grafana Monitoring missing for: " \
+            message = f"<@{main_id}> / <@{backup_id}> Grafana Monitoring missing for: " \
                       f"<#" + audit_channel_id + "> & <#" + communication_channel_id + ">"
         elif len(missing_channels) == 1:
-            message = f"<@{main_id}> (Main) and <@{backup_id}> (Backup), Grafana Monitoring missing for: {missing_channels[0]}."
+            message = f"<@{main_id}> / <@{backup_id}> Grafana Monitoring missing for: {missing_channels[0]}."
         else:
             print("All channels have messages containing 'Grafana' for today. No reminder needed.")
             return  # No reminder needed
