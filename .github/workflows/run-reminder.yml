@@ -29,6 +29,15 @@ jobs:
         REMINDER_CHANNEL_ID: ${{ secrets.REMINDER_CHANNEL_ID }}
         AUDIT_CHANNEL_ID: ${{ secrets.AUDIT_CHANNEL_ID }}
         COMMUNICATION_CHANNEL_ID: ${{ secrets.COMMUNICATION_CHANNEL_ID }}
-        GROUP_ID: ${{ secrets.GROUP_ID }}
+        # user IDs for rota members
+        JAMIE_ID: ${{ secrets.JAMIE_ID }}
+        BEN_ID: ${{ secrets.BEN_ID }}
+        KHUSHBU_ID: ${{ secrets.KHUSHBU_ID }}
+        MOSES_ID: ${{ secrets.MOSES_ID }}
+        JOHN_ID: ${{ secrets.JOHN_ID }}
+        UTTAM_ID: ${{ secrets.UTTAM_ID }}
+        DALE_ID: ${{ secrets.DALE_ID }}
+        MOHIT_ID: ${{ secrets.MOHIT_ID }}
+        DHRUV_ID: ${{ secrets.DHRUV_ID }}
       run: |
         python src/turingGrafanaReminder.py
